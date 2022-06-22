@@ -1,5 +1,5 @@
 import create from "zustand";
-import {devtools, persist} from "zustand/middleware";
+import {devtools, persist, subscribeWithSelector} from "zustand/middleware";
 
 interface IUser {
   id: string;
@@ -38,5 +38,6 @@ let userStore: any = (set: any): IUserStore => ({
 userStore = devtools(userStore);
 userStore = persist(userStore, {name: 'user_settings'});
 
-export const useSettingsStore = create<ISettingsStore>(settingsStore);
-export const useUserStore = create<IUserStore>(userStore);
+export const useSettingsStore = create<ISettingsStore>()(settingsStore);
+export const useUserStore = create<IUserStore>()(subscribeWithSelector(userStore));
+useUserStore.subscribe(state => state.users, console.log)
